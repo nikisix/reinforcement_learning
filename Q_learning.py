@@ -9,12 +9,12 @@ GAMMA = 0.9
 ALPHA = 0.1
 ACTIONS = ("U", "D", "L", "R")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
-    grid = negative_grid(step_cost= -0.1)
+    grid = negative_grid(step_cost=-0.1)
 
     # rewards
-    print('rewards')
+    print("rewards")
     print_values(grid.rewards, grid)
 
     # no policy initialization
@@ -42,36 +42,35 @@ if __name__ == '__main__':
         if i % 100 == 0:
             t += 10e-3
         if t % 2000 == 0:
-            print('i', i)
+            print("i", i)
 
         # start state
         s = (2, 0)
         grid.set_state(s)
 
-
         a, _ = max_dict(Q[s])
         biggest_change = 0
         while not grid.game_over():
-            a = random_action(a, eps = 0.5/t)
+            a = random_action(a, eps=0.5 / t)
             r = grid.move(a)
             s2 = grid.current_state()
 
-            #adaptive learning rate
+            # adaptive learning rate
             alpha = ALPHA / update_counts_sa[s][a]
             update_counts_sa[s][a] += 0.005
 
-            #we will update Q(s,a) AS we experience the episode
+            # we will update Q(s,a) AS we experience the episode
             old_qsa = Q[s][a]
-            #the difference btwn SARSA and Q Learning is Qlearning wull use
-            #max[a'] Q(s',a') in our update
+            # the difference btwn SARSA and Q Learning is Qlearning wull use
+            # max[a'] Q(s',a') in our update
             a2, max_q_s2a2 = max_dict(Q[s2])
-            Q[s][a] = Q[s][a] + alpha*(r + GAMMA*max_q_s2a2 - Q[s][a])
+            Q[s][a] = Q[s][a] + alpha * (r + GAMMA * max_q_s2a2 - Q[s][a])
             biggest_change = max(biggest_change, np.abs(old_qsa - Q[s][a]))
 
-            #count how often Q[s] is updated
-            update_counts[s] = update_counts.get(s,0) + 1
+            # count how often Q[s] is updated
+            update_counts[s] = update_counts.get(s, 0) + 1
 
-            #next state becomes current state
+            # next state becomes current state
             s = s2
             a = a2
 
@@ -87,15 +86,15 @@ if __name__ == '__main__':
         policy[s] = a
         V[s] = max_q
 
-    #what proportion of the time do we spend updating each part of Q
-    print('update counts:')
+    # what proportion of the time do we spend updating each part of Q
+    print("update counts:")
     total = np.sum(list(update_counts.values()))
     for k, v in update_counts.items():
         update_counts[k] = float(v) / total
-    print_values(update_counts,grid)
+    print_values(update_counts, grid)
 
-    print('values')
+    print("values")
     print_values(V, grid)
 
-    print('policy')
+    print("policy")
     print_policy(policy, grid)
