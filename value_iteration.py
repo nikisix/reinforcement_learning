@@ -4,8 +4,10 @@ from grid_world import grid, negative_grid
 from iterative_policy_evaluation import print_values, print_policy
 
 thresh = 1e-4
+SMALL_ENOUGH = thresh
 GAMMA = 0.9
 ACTIONS = ("U", "D", "L", "R")
+ALL_POSSIBLE_ACTIONS = ACTIONS
 
 
 # this is determinist
@@ -15,7 +17,7 @@ ACTIONS = ("U", "D", "L", "R")
 if __name__ == "__main__":
 
     # we use the negative grid so we can make the agent as efficient as possible
-    grid = grid()
+    grid = negative_grid()
 
     # print rewards
     print("rewards")
